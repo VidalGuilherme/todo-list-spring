@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: todosdb-postgres
+    ports:
+      - "5437:5432"
+    volumes:
+      - ./datadb:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=rootpass
+      - POSTGRES_DB=todos-api
+      - PGDATA=/var/lib/postgresql/data/pgdata
+
+volumes:
+  data:
