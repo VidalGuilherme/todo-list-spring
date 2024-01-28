@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping("/api/todo_lists")
 public class TodoListController {
@@ -24,17 +27,22 @@ public class TodoListController {
     @GetMapping
     public ResponseEntity<List<TodoListModel>> getTodoLists(){
         List<TodoListModel> todoListModels = repository.findAll();
+        if(!todoListModels.isEmpty()){
+            for (TodoListModel todoListModel : todoListModels){
+                UUID id = todoListModel.getIdTodoList();
+                todoListModel.add(linkTo(methodOn(TodoListController.class).getOneTodoList(id)).withSelfRel());
+            }
+        }
         return ResponseEntity.status(HttpStatus.OK).body(todoListModels);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getOneTodoList(@PathVariable(value = "id") UUID id){
         Optional<TodoListModel> todoList = repository.findById(id);
-
         if(todoList.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Todo List Not Found");
         }
-
+        todoList.get().add(linkTo(methodOn(TodoListController.class).getTodoLists()).withRel("Todo Lists All"));
         return ResponseEntity.status(HttpStatus.OK).body(todoList.get());
     }
 

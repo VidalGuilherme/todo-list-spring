@@ -3,6 +3,7 @@ package dev.vidal.todos.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name="TB_TODO_LISTS")
-public class TodoListModel implements Serializable {
+public class TodoListModel extends RepresentationModel<TodoListModel> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
