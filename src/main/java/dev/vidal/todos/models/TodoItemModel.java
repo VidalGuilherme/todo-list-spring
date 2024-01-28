@@ -1,5 +1,6 @@
 package dev.vidal.todos.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -8,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name="TB_TODO_ITEMS")
-public class TodoItem implements Serializable {
+public class TodoItemModel implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -20,11 +21,18 @@ public class TodoItem implements Serializable {
     @Column(nullable = false)
     private String description;
 
-    private boolean completed = false;
+    private boolean completed;
 
-    @ManyToOne
-    @JoinColumn(name="id_todo_list", nullable=false)
-    private TodoList todoList;
+    @ManyToOne(targetEntity = TodoListModel.class)
+    @JoinColumn(name="todo_list_id", nullable=false)
+    @JsonIgnoreProperties("todoItems")
+    private TodoListModel todoList;
+
+    public TodoItemModel(){}
+
+    public TodoItemModel(TodoListModel todoListModel){
+        this.todoList = todoListModel;
+    }
 
     public UUID getIdTodoItem() {
         return idTodoItem;
@@ -50,11 +58,11 @@ public class TodoItem implements Serializable {
         this.completed = completed;
     }
 
-    public TodoList getTodoList() {
+    public TodoListModel getTodoList() {
         return todoList;
     }
 
-    public void setTodoList(TodoList todoList) {
-        this.todoList = todoList;
+    public void setTodoList(TodoListModel todoListModel) {
+        this.todoList = todoListModel;
     }
 }
